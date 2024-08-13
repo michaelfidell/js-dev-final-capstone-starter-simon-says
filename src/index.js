@@ -4,9 +4,9 @@
 
  const startButton = document.querySelector(".js-start-button");
  // TODO: Add the missing query selectors:
- const statusSpan; // Use querySelector() to get the status element
- const heading; // Use querySelector() to get the heading element
- const padContainer; // Use querySelector() to get the heading element
+ const statusSpan = document.querySelector('.js-status'); // Use querySelector() to get the status element
+ const heading = document.querySelector('.js-heading'); // Use querySelector() to get the heading element
+ const padContainer = document.querySelector(".js-pad-container"); // Use querySelector() to get the heading element
 
 /**
  * VARIABLES
@@ -37,7 +37,21 @@ let roundCount = 0; // track the number of rounds that have been played so far
     selector: document.querySelector(".js-pad-red"),
     sound: new Audio("../assets/simon-says-sound-1.mp3"),
   },
-  // TODO: Add the objects for the green, blue, and yellow pads. Use object for the red pad above as an example.
+  {
+    color: "green",
+    selector: document.querySelector(".js-pad-green"),
+    sound: new Audio("../assets/simon-says-sound-2.mp3"),
+  },
+  {
+    color: "blue",
+    selector: document.querySelector(".js-pad-blue"),
+    sound: new Audio("../assets/simon-says-sound-3.mp3"),
+  },
+  {
+    color: "yellow",
+    selector: document.querySelector(".js-pad-yellow"),
+    sound: new Audio("../assets/simon-says-sound-4.mp3"),
+  },
 ];
 
 /**
@@ -45,6 +59,7 @@ let roundCount = 0; // track the number of rounds that have been played so far
  */
 
 padContainer.addEventListener("click", padHandler);
+startButton.addEventListener("click", startButtonHandler);
 // TODO: Add an event listener `startButtonHandler()` to startButton.
 
 /**
@@ -66,8 +81,11 @@ padContainer.addEventListener("click", padHandler);
  *
  */
 function startButtonHandler() {
-  // TODO: Write your code here.
-
+  setLevel();
+  roundCount += 1;
+  startButton.classList.add('hidden');
+  statusSpan.classList.remove('hidden');
+  playComputerTurn();
   return { startButton, statusSpan };
 }
 
@@ -122,7 +140,17 @@ function padHandler(event) {
  *
  */
 function setLevel(level = 1) {
-  // TODO: Write your code here.
+  const levels = {
+    1: 8,
+    2: 14,
+    3: 20,
+    4: 31,
+  }
+  if(![1, 2, 3, 4].includes(level)){
+    return ('Please enter level 1, 2, 3, or 4');
+  } else {
+    return levels[level];
+  }
 }
 
 /**
@@ -141,16 +169,16 @@ function setLevel(level = 1) {
  * getRandomItem([1, 2, 3, 4]) //> returns 1
  */
 function getRandomItem(collection) {
-  // if (collection.length === 0) return null;
-  // const randomIndex = Math.floor(Math.random() * collection.length);
-  // return collection[randomIndex];
+  if (collection.length === 0) return null;
+  const randomIndex = Math.floor(Math.random() * collection.length);
+  return collection[randomIndex];
 }
 
 /**
  * Sets the status text of a given HTML element with a given a message
  */
 function setText(element, text) {
-  // TODO: Write your code here.
+  element.textContent = text;
   return element;
 }
 
@@ -168,7 +196,10 @@ function setText(element, text) {
  */
 
 function activatePad(color) {
-  // TODO: Write your code here.
+  const pad = pads.find(pad => pad.color === color);
+  pad.classList.add('activated');
+  pad.sound.play();
+  setTimeout((pad) => pad.classList.remove('activated'), 500);
 }
 
 /**
