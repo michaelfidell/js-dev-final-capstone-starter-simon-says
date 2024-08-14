@@ -109,7 +109,9 @@ function startButtonHandler() {
 function padHandler(event) {
   const { color } = event.target.dataset;
   if (!color) return;
-
+  const pad = pads.find((pad) => pad.color === color);
+  pad.sound.play();
+  checkPress(color);
   // TODO: Write your code here.
   return color;
 }
@@ -217,7 +219,7 @@ function activatePad(color) {
  */
 
 function activatePads(sequence) {
-  // TODO: Write your code here.
+  sequence.forEach((element, index) => setTimeout(activatePad(element.color), 600 * index))
 }
 
 /**
@@ -244,8 +246,12 @@ function activatePads(sequence) {
  * sequence.
  */
  function playComputerTurn() {
-  // TODO: Write your code here.
-
+  padContainer.classList.add('unclickable');
+  statusSpan.textContent(`The computer's turn...`);
+  heading.textContent(`Round ${roundCount} of ${maxRoundCount}`);
+  const colors = ['red', 'green', 'blue', 'yellow']
+  computerSequence.push(getRandomItem(colors));
+  activatePads(computerSequence);
   setTimeout(() => playHumanTurn(roundCount), roundCount * 600 + 1000); // 5
 }
 
@@ -257,7 +263,8 @@ function activatePads(sequence) {
  * 2. Display a status message showing the player how many presses are left in the round
  */
 function playHumanTurn() {
-  // TODO: Write your code here.
+  padContainer.classList.remove('unclickable');
+  statusSpan.textContent(`${computerSequence.length} - ${playerSequence.length} presses left`);
 }
 
 /**
@@ -283,7 +290,11 @@ function playHumanTurn() {
  *
  */
 function checkPress(color) {
-  // TODO: Write your code here.
+  playerSequence.push(color);
+  const index = playerSequence.length - 1;
+  const remainingPresses = computerSequence.length - playerSequence.length;
+  statusSpan.textContent(`${computerSequence.length} - ${playerSequence.length}`);
+  if (!computerSequence[index] === playerSequence[index]) { resetGame('Sorry you failed!');  }
 }
 
 /**
